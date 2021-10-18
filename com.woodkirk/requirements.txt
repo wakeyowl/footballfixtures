@@ -1,0 +1,7 @@
+###### Requirements without Version Specifiers ######
+json2html
+beautifulsoup4
+timestring
+lxml
+urllib3
+pandas
