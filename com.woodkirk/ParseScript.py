@@ -1,20 +1,20 @@
 __author__ = 'iainm'
 
+import json
 import re
 import smtplib
 import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
-import pandas as pd
-from pandas.io import json
-from pandas.io.json import json_normalize
 import requests
 from bs4 import BeautifulSoup
 from json2html import *
+from collections import OrderedDict
+
 
 sender_email = "woodkirkvalleyupdates@gmail.com"
-receiver_email = "iainthompsonmacdonald@gmail.com;wakeyowl@gmail.com"
+receiver_email = "headoffootball@woodkirkvalleyfc.org;wakeyowl@gmail.com"
 password = input("Type your password and press enter:")
 
 fixturesurls = {
@@ -37,6 +37,9 @@ fixturesurls = {
 }
 table_json = {}
 index = 0
+list_of_fixtures = []
+home_fixtures = []
+away_fixtures = []
 
 
 def parseurl(inputUrl):
@@ -48,54 +51,45 @@ def parseurl(inputUrl):
     table = soup.find("table")
     # table_body = table.find('tbody')
     rows = table.find_all('tr')
+
     for row in rows:
         if len(row.select('td')) > 0:
             cols = row.select('td')
             # Strip new lines and apostrophes
-            table_json[index] = {"fixtureType": cols[0].text.strip(" \n \r \t"),
-                                 "time": cols[1].text.strip("\n \r \t").replace('\n', ' '),
-                                 "homeTeam": cols[2].text.strip(" \n \r \t"),
-                                 "awayTeam": cols[6].text.strip(" \n \r \t"),
-                                 "location": cols[7].text.strip(" \n \r \t"),
-                                 "leagueDivision": cols[8].text.strip(" \n \r \t"),
-                                 "notes": cols[9].text.strip(" \n \r \t"),
-                                 }
-            index += 1
 
+            fixture = OrderedDict()
+            home_team_check = cols[2].text.strip(" \n \r \t")
+            if home_team_check.startswith('Woodkirk'):
+                fixture['fixtureType'] = cols[0].text.strip(" \n \r \t")
+                fixture['time'] = cols[1].text.strip("\n \r \t").replace('\n', ' ')
+                fixture['homeTeam'] = cols[2].text.strip(" \n \r \t")
+                fixture['awayTeam'] = cols[6].text.strip(" \n \r \t")
+                fixture['location'] = cols[7].text.strip(" \n \r \t")
+                fixture['leagueDivision'] = cols[8].text.strip(" \n \r \t")
+                fixture['notes'] = cols[9].text.strip(" \n \r \t")
+                list_of_fixtures.append(fixture)
+            
 
 for key, url in fixturesurls.items():
     parseurl(url)
 
-home_games = {}
 count = 0
-for row in table_json:
-    if table_json[row]['location'].startswith('Woodkirk'):
-        # print(table_json[row])
-        home_games[count] = table_json[row]
-        count += 1
+# for row in listoffixtures:
+#     if listoffixtures[row]['location'].startswith('Woodkirk'):
+#         # print(table_json[row])
+#         home_games[count] = table_json[row]
+#         count += 1
 # print(table_json)
 
-# Update the parsing of teams and special chars
-parsestring = str(home_games)
-# parsestring = str(table_json)
-parsestring = re.sub(r'[0-9]?[0-9]: {', "{", parsestring)
-parsestring = re.sub(r'(\d+)\'s', r'\1s', parsestring)
-parsestring = re.sub(r'\'', "\"", parsestring)
-parsestring = re.sub(r'^{', "{\"fixtures\": [ ", parsestring)
-parsestring = re.sub(r'}}$', "}]}", parsestring)
-
-# print(parsestring)
-
-# Parsing Json object
-# json_parse = json.loads(parsestring)
-
-
+# Order the dictionary based on data format ddmmyy hm
+neworderdict = sorted(list_of_fixtures, key=lambda i: datetime.strptime((i['time']), "%d/%m/%y %H:%M"))
+parsestring = json.dumps(neworderdict)
 outputtable = json2html.convert(json=parsestring)
 
 outputtable = re.sub(r'<table border=\"1\"><tr><th>fixtures</th><td>', "", outputtable)
 outputtable = re.sub(r'<table border=\"1\">', "<table border=\"1\" class=\"sortable\">", outputtable)
 outputtable = re.sub(r'</table></td></tr></table>', "</table>", outputtable)
-print(outputtable)
+# print(outputtable)
 
 # Email Sending
 message = MIMEMultipart("alternative")
