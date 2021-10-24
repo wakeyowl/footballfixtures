@@ -68,14 +68,15 @@ for key, url in fixturesurls.items():
 
 count = 0
 
-
 # Order the dictionary based on data format ddmmyy hm
 neworderdict = sorted(list_of_fixtures, key=lambda i: datetime.strptime((i['time']), "%d/%m/%y %H:%M"))
 parsestring = json.dumps(neworderdict)
 outputtable = json2html.convert(json=parsestring)
 
 outputtable = re.sub(r'<table border=\"1\"><tr><th>fixtures</th><td>', "", outputtable)
-outputtable = re.sub(r'<table border=\"1\">', "<table border=\"1\" class=\"sortable\">", outputtable)
+outputtable = re.sub(r'<table border=\"1\">', "<table border=\"1\" style=\"border-collapse:collapse;width:100%;font-family:Verdana, Arial, Tahoma, Serif;\" class=\"sortable\">", outputtable)
+outputtable = re.sub(r'<tr>', "<tr style=\"background-color:#ffad33;\">", outputtable)
+outputtable = re.sub(r'<th>', "<th style=\"background-color:#000000;color:white;\">", outputtable)
 outputtable = re.sub(r'</table></td></tr></table>', "</table>", outputtable)
 # print(outputtable)
 
@@ -91,8 +92,9 @@ Woodkirk Valley Home Fixtures - Next 30 Days"""
 html = """\
 <html>
   <body>
-    <p>Home Fixtures
-    </p>
+    <h1>
+    <img src="https://woodkirkvalleyfc.org/wp/wp-content/uploads/cropped-cropped-cropped-cropped-cropped-imageedit_1_6657768956-2-1.png" alt="WVFC" width="50" height="50">Woodkirk Valley FC Home Fixtures
+    </h1>
     """ + outputtable + """
   </body>
 </html>
