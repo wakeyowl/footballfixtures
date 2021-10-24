@@ -13,7 +13,7 @@ from json2html import *
 from collections import OrderedDict
 
 sender_email = "woodkirkvalleyupdates@gmail.com"
-receiver_email = ["wakeyowl@gmail.com", "headoffootball@woodkirkvalleyfc.org", "ryanhealey1984@googlemail.com"]
+receiver_email = ["wakeyowl@gmail.com", "headoffootball@woodkirkvalleyfc.org", "ryanhealey1984@googlemail.com", "paulgunjal@gmail.com"]
 password = input("Type your password and press enter:")
 
 fixturesurls = {
