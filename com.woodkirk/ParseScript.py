@@ -13,14 +13,16 @@ from json2html import *
 from collections import OrderedDict
 
 sender_email = "woodkirkvalleyupdates@gmail.com"
+# receiver_email = ["wakeyowl@gmail.com"]
 receiver_email = ["wakeyowl@gmail.com", "headoffootball@woodkirkvalleyfc.org", "ryanhealey1984@googlemail.com", "paulgunjal@gmail.com"]
 password = input("Type your password and press enter:")
+ftime_date_period = "7"
 
 fixturesurls = {
-    "url_garforth_boys": "https://fulltime.thefa.com/fixtures.html?selectedSeason=137898063&selectedFixtureGroupAgeGroup=0&selectedFixtureGroupKey=&selectedDateCode=30days&selectedClub=655071567&selectedTeam=&selectedRelatedFixtureOption=2&selectedFixtureDateStatus=&selectedFixtureStatus=&previousSelectedFixtureGroupAgeGroup=&previousSelectedFixtureGroupKey=&previousSelectedClub=655071567&itemsPerPage=100",
-    "url_hudd_boys": "https://fulltime.thefa.com/fixtures/1/100.html?selectedSeason=22218977&selectedFixtureGroupAgeGroup=0&previousSelectedFixtureGroupAgeGroup=&selectedFixtureGroupKey=&previousSelectedFixtureGroupKey=&selectedDateCode=30days&selectedRelatedFixtureOption=2&selectedClub=344917937&previousSelectedClub=344917937&selectedTeam=&selectedFixtureDateStatus=&selectedFixtureStatus=",
-    "url_westriding_fa_dev_league": "https://fulltime.thefa.com/fixtures.html?selectedSeason=804066443&selectedFixtureGroupKey=&selectedDateCode=30days&selectedClub=784070333&selectedTeam=&selectedRelatedFixtureOption=2&selectedFixtureDateStatus=&selectedFixtureStatus=&previousSelectedFixtureGroupAgeGroup=&previousSelectedFixtureGroupKey=&previousSelectedClub=784070333&itemsPerPage=25",
-    "url_west_riding_womens": "https://fulltime.thefa.com/fixtures.html?selectedSeason=188043962&selectedFixtureGroupKey=&selectedDateCode=30days&selectedClub=424649067&selectedTeam=&selectedRelatedFixtureOption=2&selectedFixtureDateStatus=&selectedFixtureStatus=&previousSelectedFixtureGroupAgeGroup=&previousSelectedFixtureGroupKey=&previousSelectedClub=424649067&itemsPerPage=25"
+    "url_garforth_boys": "https://fulltime.thefa.com/fixtures.html?selectedSeason=137898063&selectedFixtureGroupAgeGroup=0&selectedFixtureGroupKey=&selectedDateCode=" + ftime_date_period + "days&selectedClub=655071567&selectedTeam=&selectedRelatedFixtureOption=2&selectedFixtureDateStatus=&selectedFixtureStatus=&previousSelectedFixtureGroupAgeGroup=&previousSelectedFixtureGroupKey=&previousSelectedClub=655071567&itemsPerPage=100",
+    "url_hudd_boys": "https://fulltime.thefa.com/fixtures/1/100.html?selectedSeason=22218977&selectedFixtureGroupAgeGroup=0&previousSelectedFixtureGroupAgeGroup=&selectedFixtureGroupKey=&previousSelectedFixtureGroupKey=&selectedDateCode=" + ftime_date_period + "days&selectedRelatedFixtureOption=2&selectedClub=344917937&previousSelectedClub=344917937&selectedTeam=&selectedFixtureDateStatus=&selectedFixtureStatus=",
+    "url_westriding_fa_dev_league": "https://fulltime.thefa.com/fixtures.html?selectedSeason=804066443&selectedFixtureGroupKey=&selectedDateCode=" + ftime_date_period + "days&selectedClub=784070333&selectedTeam=&selectedRelatedFixtureOption=2&selectedFixtureDateStatus=&selectedFixtureStatus=&previousSelectedFixtureGroupAgeGroup=&previousSelectedFixtureGroupKey=&previousSelectedClub=784070333&itemsPerPage=25",
+    "url_west_riding_womens": "https://fulltime.thefa.com/fixtures.html?selectedSeason=188043962&selectedFixtureGroupKey=&selectedDateCode=" + ftime_date_period + "days&selectedClub=424649067&selectedTeam=&selectedRelatedFixtureOption=2&selectedFixtureDateStatus=&selectedFixtureStatus=&previousSelectedFixtureGroupAgeGroup=&previousSelectedFixtureGroupKey=&previousSelectedClub=424649067&itemsPerPage=25"
 
     # "url_girls":"http://full-time.thefa.com/ListPublicFixture.do?selectedFixtureGroupKey=&selectedRelatedFixtureOption=2&selectedClub=444560366&selectedTeam=&selectedFixtureDateStatus=&selectedFixtureStatus=&selectedDateCode=30days&previousSelectedFixtureGroupKey=&previousSelectedClub=444560366&seasonID=986432876&selectedSeason=986432876",
     # "url_steveRose":"http://full-time.thefa.com/ListPublicFixture.do?selectedFixtureGroupKey=&selectedRelatedFixtureOption=2&selectedClub=3832346&selectedTeam=&selectedFixtureDateStatus=&selectedFixtureStatus=&selectedDateCode=30days&selectednavpage1=1&navPageNumber1=1&previousSelectedFixtureGroupKey=&previousSelectedClub=&seasonID=131449576&selectedSeason=131449576",
@@ -33,6 +35,10 @@ index = 0
 list_of_fixtures = []
 home_fixtures = []
 away_fixtures = []
+three_quarter_11 = []
+full_sized_11 = []
+three_g = []
+nine_side = []
 
 
 def parseurl(inputUrl):
@@ -101,32 +107,58 @@ count = 0
 
 # Order the dictionary based on data format ddmmyy hm
 neworderdict = sorted(list_of_fixtures, key=lambda i: datetime.strptime((i['time']), "%d/%m/%y %H:%M"))
-parsestring = json.dumps(neworderdict)
-outputtable = json2html.convert(json=parsestring)
 
-outputtable = re.sub(r'<table border=\"1\"><tr><th>fixtures</th><td>', "", outputtable)
-outputtable = re.sub(r'<table border=\"1\">', "<table border=\"1\" style=\"border-collapse:collapse;width:100%;font-family:Verdana, Arial, Tahoma, Serif;\" class=\"sortable\">", outputtable)
-outputtable = re.sub(r'<tr>', "<tr style=\"background-color:#ffad33;\">", outputtable)
-outputtable = re.sub(r'<th>', "<th style=\"background-color:#000000;color:white;\">", outputtable)
-outputtable = re.sub(r'</table></td></tr></table>', "</table>", outputtable)
-# print(outputtable)
+full_sized_11 = [game for game in neworderdict if game['pitch'] == "FULL SIZED 11"]
+three_quarter_11 = [game for game in neworderdict if game['pitch'] == "3/4 11"]
+# List of multiple game types in list
+list_keys_3_g = ["7 SIDE", "5 SIDE"]
+three_g = list(filter(lambda d: d['pitch'] in list_keys_3_g, neworderdict))
+nine_side = [game for game in neworderdict if game['pitch'] == "9 SIDE"]
+
+
+def parse_dict_to_html(dict_name):
+
+    parsestring = json.dumps(dict_name)
+    output_table = json2html.convert(json=parsestring)
+    output_table = re.sub(r'<table border=\"1\"><tr><th>fixtures</th><td>', "", output_table)
+    output_table = re.sub(r'<table border=\"1\">',
+                         "<table border=\"1\" style=\"border-collapse:collapse;width:100%;font-family:Verdana, Arial, Tahoma, Serif;\" class=\"sortable\">",
+                         output_table)
+    output_table = re.sub(r'<tr>', "<tr style=\"background-color:#ffad33;\">", output_table)
+    output_table = re.sub(r'<th>', "<th style=\"background-color:#000000;color:white;\">", output_table)
+    output_table = re.sub(r'</table></td></tr></table>', "</table>", output_table)
+    return output_table
+
+
+full_sized_11_html = parse_dict_to_html(full_sized_11)
+three_quarter_11_html = parse_dict_to_html(three_quarter_11)
+three_g_html = parse_dict_to_html(three_g)
+nine_side_html = parse_dict_to_html(nine_side)
+
 
 # Email Sending
 message = MIMEMultipart("alternative")
-message["Subject"] = "Woodkirk Valley Home Fixtures - Next 30 days"
+message["Subject"] = "Woodkirk Valley Home Fixtures - Next "+ftime_date_period+" days"
 message["From"] = sender_email
 message["To"] = ', '.join(receiver_email)
 
 # Create the plain-text and HTML version of your message
 text = """\
-Woodkirk Valley Home Fixtures - Next 30 Days"""
+Woodkirk Valley Home Fixtures - Next """+ftime_date_period+""" Days"""
 html = """\
 <html>
   <body>
     <h1>
     <img src="https://woodkirkvalleyfc.org/wp/wp-content/uploads/cropped-cropped-cropped-cropped-cropped-imageedit_1_6657768956-2-1.png" alt="WVFC" width="50" height="50">Woodkirk Valley FC Home Fixtures
     </h1>
-    """ + outputtable + """
+    <h2>Pitch 4 & 5 Games</h2>
+    """ + full_sized_11_html + """
+    <h2>Pitch 2 Games</h2>
+    """ + three_quarter_11_html + """
+    <h2>Pitch 1 & 3 Games</h2>
+    """ + nine_side_html + """
+    <h2>3G Games</h2>
+    """ + three_g_html + """
   </body>
 </html>
 """
