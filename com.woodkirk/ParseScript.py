@@ -45,6 +45,35 @@ def parseurl(inputUrl):
     # table_body = table.find('tbody')
     rows = table.find_all('tr')
 
+    def set_pitch_size(agegroup):
+        match agegroup:
+            case "18":
+                return "FULL SIZED 11"
+            case "17":
+                return "FULL SIZED 11"
+            case "16":
+                return "FULL SIZED 11"
+            case "15":
+                return "FULL SIZED 11"
+            case "14":
+                return "3/4 11"
+            case "13":
+                return "3/4 11"
+            case "12":
+                return "9 SIDE"
+            case "11":
+                return "9 SIDE"
+            case "10":
+                return "7 SIDE"
+            case "9":
+                return "7 SIDE"
+            case "8":
+                return "5 SIDE"
+            case "7":
+                return "5 SIDE"
+            case _:
+                return "UNKNOWN"
+
     for row in rows:
         if len(row.select('td')) > 0:
             cols = row.select('td')
@@ -52,6 +81,7 @@ def parseurl(inputUrl):
 
             fixture = OrderedDict()
             home_team_check = cols[2].text.strip(" \n \r \t")
+            age_group_check = home_team_check.lower().strip("woodkirk valley orange white black u under s")
             if home_team_check.lower().startswith(("woodkirk", "morley town lfc")):
                 fixture['fixtureType'] = cols[0].text.strip(" \n \r \t")
                 fixture['time'] = cols[1].text.strip("\n \r \t").replace('\n', ' ')
@@ -60,6 +90,7 @@ def parseurl(inputUrl):
                 fixture['location'] = cols[7].text.strip(" \n \r \t")
                 fixture['leagueDivision'] = cols[8].text.strip(" \n \r \t")
                 fixture['notes'] = cols[9].text.strip(" \n \r \t")
+                fixture['pitch'] = set_pitch_size(age_group_check)
                 list_of_fixtures.append(fixture)
 
 
