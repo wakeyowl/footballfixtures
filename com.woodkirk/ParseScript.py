@@ -13,7 +13,7 @@ from json2html import *
 from collections import OrderedDict
 
 sender_email = "woodkirkvalleyupdates@gmail.com"
-# receiver_email = ["wakeyowl@gmail.com"]
+#receiver_email = ["wakeyowl@gmail.com"]
 receiver_email = ["wakeyowl@gmail.com", "headoffootball@woodkirkvalleyfc.org", "ryanhealey1984@googlemail.com", "paulgunjal@gmail.com"]
 password = input("Type your password and press enter:")
 ftime_date_period = "7"
@@ -22,12 +22,9 @@ fixturesurls = {
     "url_garforth_boys": "https://fulltime.thefa.com/fixtures.html?selectedSeason=137898063&selectedFixtureGroupAgeGroup=0&selectedFixtureGroupKey=&selectedDateCode=" + ftime_date_period + "days&selectedClub=655071567&selectedTeam=&selectedRelatedFixtureOption=2&selectedFixtureDateStatus=&selectedFixtureStatus=&previousSelectedFixtureGroupAgeGroup=&previousSelectedFixtureGroupKey=&previousSelectedClub=655071567&itemsPerPage=100",
     "url_hudd_boys": "https://fulltime.thefa.com/fixtures/1/100.html?selectedSeason=22218977&selectedFixtureGroupAgeGroup=0&previousSelectedFixtureGroupAgeGroup=&selectedFixtureGroupKey=&previousSelectedFixtureGroupKey=&selectedDateCode=" + ftime_date_period + "days&selectedRelatedFixtureOption=2&selectedClub=344917937&previousSelectedClub=344917937&selectedTeam=&selectedFixtureDateStatus=&selectedFixtureStatus=",
     "url_westriding_fa_dev_league": "https://fulltime.thefa.com/fixtures.html?selectedSeason=804066443&selectedFixtureGroupKey=&selectedDateCode=" + ftime_date_period + "days&selectedClub=784070333&selectedTeam=&selectedRelatedFixtureOption=2&selectedFixtureDateStatus=&selectedFixtureStatus=&previousSelectedFixtureGroupAgeGroup=&previousSelectedFixtureGroupKey=&previousSelectedClub=784070333&itemsPerPage=25",
-    "url_west_riding_womens": "https://fulltime.thefa.com/fixtures.html?selectedSeason=188043962&selectedFixtureGroupKey=&selectedDateCode=" + ftime_date_period + "days&selectedClub=424649067&selectedTeam=&selectedRelatedFixtureOption=2&selectedFixtureDateStatus=&selectedFixtureStatus=&previousSelectedFixtureGroupAgeGroup=&previousSelectedFixtureGroupKey=&previousSelectedClub=424649067&itemsPerPage=25"
-
-    # "url_girls":"http://full-time.thefa.com/ListPublicFixture.do?selectedFixtureGroupKey=&selectedRelatedFixtureOption=2&selectedClub=444560366&selectedTeam=&selectedFixtureDateStatus=&selectedFixtureStatus=&selectedDateCode=30days&previousSelectedFixtureGroupKey=&previousSelectedClub=444560366&seasonID=986432876&selectedSeason=986432876",
-    # "url_steveRose":"http://full-time.thefa.com/ListPublicFixture.do?selectedFixtureGroupKey=&selectedRelatedFixtureOption=2&selectedClub=3832346&selectedTeam=&selectedFixtureDateStatus=&selectedFixtureStatus=&selectedDateCode=30days&selectednavpage1=1&navPageNumber1=1&previousSelectedFixtureGroupKey=&previousSelectedClub=&seasonID=131449576&selectedSeason=131449576",
-    # "url_mens_sat":"http://full-time.thefa.com/ListPublicFixture.do?selectedFixtureGroupKey=&selectedRelatedFixtureOption=2&selectedClub=69544268&selectedTeam=&selectedFixtureDateStatus=&selectedFixtureStatus=&selectedDateCode=30days&selectednavpage1=1&navPageNumber1=1&previousSelectedFixtureGroupKey=&previousSelectedClub=&seasonID=620895215&selectedSeason=620895215",
-    # "url_men_sun":"http://full-time.thefa.com/ListPublicFixture.do?selectedFixtureGroupKey=&selectedRelatedFixtureOption=2&selectedClub=675798519&selectedTeam=&selectedFixtureDateStatus=&selectedFixtureStatus=&selectedDateCode=30days&selectednavpage1=1&navPageNumber1=1&previousSelectedFixtureGroupKey=&previousSelectedClub=&seasonID=225632433&selectedSeason=225632433"
+    "url_west_riding_womens": "https://fulltime.thefa.com/fixtures.html?selectedSeason=188043962&selectedFixtureGroupKey=&selectedDateCode=" + ftime_date_period + "days&selectedClub=424649067&selectedTeam=&selectedRelatedFixtureOption=2&selectedFixtureDateStatus=&selectedFixtureStatus=&previousSelectedFixtureGroupAgeGroup=&previousSelectedFixtureGroupKey=&previousSelectedClub=424649067&itemsPerPage=25",
+    "url_girls": "https://fulltime.thefa.com/fixtures.html?selectedSeason=494509686&selectedFixtureGroupAgeGroup=0&selectedFixtureGroupKey=&selectedDateCode="+ ftime_date_period +"days&selectedClub=563927265&selectedTeam=&selectedRelatedFixtureOption=2&selectedFixtureDateStatus=&selectedFixtureStatus=&previousSelectedFixtureGroupAgeGroup=&previousSelectedFixtureGroupKey=&previousSelectedClub=563927265&itemsPerPage=25",
+    "url_mens_sat": "https://fulltime.thefa.com/fixtures/1/100.html?selectedSeason=388107578&selectedFixtureGroupAgeGroup=0&previousSelectedFixtureGroupAgeGroup=&selectedFixtureGroupKey=&previousSelectedFixtureGroupKey=&selectedDateCode="+ ftime_date_period +"days&selectedRelatedFixtureOption=2&selectedClub=192561285&previousSelectedClub=192561285&selectedTeam=&selectedFixtureDateStatus=&selectedFixtureStatus="
 
 }
 table_json = {}
@@ -39,6 +36,7 @@ three_quarter_11 = []
 full_sized_11 = []
 three_g = []
 nine_side = []
+unknown = []
 
 
 def parseurl(inputUrl):
@@ -109,6 +107,7 @@ count = 0
 neworderdict = sorted(list_of_fixtures, key=lambda i: datetime.strptime((i['time']), "%d/%m/%y %H:%M"))
 
 full_sized_11 = [game for game in neworderdict if game['pitch'] == "FULL SIZED 11"]
+unknown = [game for game in neworderdict if game['pitch'] == "UNKNOWN"]
 three_quarter_11 = [game for game in neworderdict if game['pitch'] == "3/4 11"]
 # List of multiple game types in list
 list_keys_3_g = ["7 SIDE", "5 SIDE"]
@@ -134,6 +133,7 @@ full_sized_11_html = parse_dict_to_html(full_sized_11)
 three_quarter_11_html = parse_dict_to_html(three_quarter_11)
 three_g_html = parse_dict_to_html(three_g)
 nine_side_html = parse_dict_to_html(nine_side)
+unknown_html = parse_dict_to_html(unknown)
 
 
 # Email Sending
@@ -151,14 +151,16 @@ html = """\
     <h1>
     <img src="https://woodkirkvalleyfc.org/wp/wp-content/uploads/cropped-cropped-cropped-cropped-cropped-imageedit_1_6657768956-2-1.png" alt="WVFC" width="50" height="50">Woodkirk Valley FC Home Fixtures
     </h1>
-    <h2>Pitch 4 & 5 Games</h2>
-    """ + full_sized_11_html + """
-    <h2>Pitch 2 Games</h2>
-    """ + three_quarter_11_html + """
     <h2>Pitch 1 & 3 Games</h2>
     """ + nine_side_html + """
+    <h2>Pitch 2 Games</h2>
+    """ + three_quarter_11_html + """
+    <h2>Pitch 4 & 5 Games</h2>
+    """ + full_sized_11_html + """
     <h2>3G Games</h2>
     """ + three_g_html + """
+    <h2>Senior Teams</h2>
+    """ + unknown_html + """
   </body>
 </html>
 """
