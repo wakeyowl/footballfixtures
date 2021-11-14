@@ -39,9 +39,9 @@ nine_side = []
 unknown = []
 
 
-def parseurl(inputUrl):
+def parseurl(inputurl):
     global index
-    page = requests.get(inputUrl)
+    page = requests.get(inputurl)
 
     soup = BeautifulSoup(page.content, features="html.parser")
     # table = soup.find("class", "fixtures-table")
