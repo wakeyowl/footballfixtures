@@ -49,34 +49,22 @@ def parseurl(inputUrl):
     # table_body = table.find('tbody')
     rows = table.find_all('tr')
 
-    def set_pitch_size(agegroup):
-        match agegroup:
-            case "18":
-                return "FULL SIZED 11"
-            case "17":
-                return "FULL SIZED 11"
-            case "16":
-                return "FULL SIZED 11"
-            case "15":
-                return "FULL SIZED 11"
-            case "14":
-                return "3/4 11"
-            case "13":
-                return "3/4 11"
-            case "12":
-                return "9 SIDE"
-            case "11":
-                return "9 SIDE"
-            case "10":
-                return "7 SIDE"
-            case "9":
-                return "7 SIDE"
-            case "8":
-                return "5 SIDE"
-            case "7":
-                return "5 SIDE"
-            case _:
-                return "UNKNOWN"
+    # Set Pitch Size Function
+    def set_pitch_size(x):
+        return {
+            '18': "Full Sized XI",
+            '17': "Full Sized XI",
+            '16': "Full Sized XI",
+            '15': "Full Sized XI",
+            '14': "3/4 Sized XI",
+            '13': "3/4 Sized XI",
+            '12': "9-Side",
+            '11': "9-Side",
+            '10': "7-Side",
+            '9': "7-Side",
+            '8': "5-Side",
+            '7': "5-Side",
+        }.get(x, "Unknown")
 
     for row in rows:
         if len(row.select('td')) > 0:
@@ -106,13 +94,13 @@ count = 0
 # Order the dictionary based on data format ddmmyy hm
 neworderdict = sorted(list_of_fixtures, key=lambda i: datetime.strptime((i['time']), "%d/%m/%y %H:%M"))
 
-full_sized_11 = [game for game in neworderdict if game['pitch'] == "FULL SIZED 11"]
-unknown = [game for game in neworderdict if game['pitch'] == "UNKNOWN"]
-three_quarter_11 = [game for game in neworderdict if game['pitch'] == "3/4 11"]
+full_sized_11 = [game for game in neworderdict if game['pitch'] == "Full Sized XI"]
+unknown = [game for game in neworderdict if game['pitch'] == "Unknown"]
+three_quarter_11 = [game for game in neworderdict if game['pitch'] == "3/4 Sized XI"]
 # List of multiple game types in list
-list_keys_3_g = ["7 SIDE", "5 SIDE"]
+list_keys_3_g = ["7-Side", "5-Side"]
 three_g = list(filter(lambda d: d['pitch'] in list_keys_3_g, neworderdict))
-nine_side = [game for game in neworderdict if game['pitch'] == "9 SIDE"]
+nine_side = [game for game in neworderdict if game['pitch'] == "9-Side"]
 
 
 def parse_dict_to_html(dict_name):
