@@ -13,7 +13,7 @@ from json2html import *
 from collections import OrderedDict
 
 sender_email = "woodkirkvalleyupdates@gmail.com"
-receiver_email = ["wakeyowl@gmail.com", "headoffootball@woodkirkvalleyfc.org" ]
+receiver_email = ["wakeyowl@gmail.com", "headoffootball@woodkirkvalleyfc.org", "ryanhealey1984@googlemail.com" ]
 #receiver_email = ["wakeyowl@gmail.com", "headoffootball@woodkirkvalleyfc.org", "ryanhealey1984@googlemail.com", "paulgunjal@gmail.com"]
 password = input("Type your password and press enter:")
 ftime_date_period = "7"
@@ -75,15 +75,16 @@ def parseurl(inputurl):
             home_team_check = cols[2].text.strip(" \n \r \t")
             age_group_check = home_team_check.lower().strip("woodkirk valley orange white black u under s")
             if home_team_check.lower().startswith(("woodkirk", "morley town lfc")):
-                fixture['fixtureType'] = cols[0].text.strip(" \n \r \t")
-                fixture['time'] = cols[1].text.strip("\n \r \t").replace('\n', ' ')
-                fixture['homeTeam'] = cols[2].text.strip(" \n \r \t")
-                fixture['awayTeam'] = cols[6].text.strip(" \n \r \t")
-                fixture['location'] = cols[7].text.strip(" \n \r \t")
-                fixture['leagueDivision'] = cols[8].text.strip(" \n \r \t")
-                fixture['notes'] = cols[9].text.strip(" \n \r \t")
-                fixture['pitch'] = set_pitch_size(age_group_check)
-                list_of_fixtures.append(fixture)
+                if (str(cols[1].text.strip(("\n \r \t").replace('\n', ' ')) != 'TBC')):
+                    fixture['fixtureType'] = cols[0].text.strip(" \n \r \t")
+                    fixture['time'] = cols[1].text.strip("\n \r \t").replace('\n', ' ')
+                    fixture['homeTeam'] = cols[2].text.strip(" \n \r \t")
+                    fixture['awayTeam'] = cols[6].text.strip(" \n \r \t")
+                    fixture['location'] = cols[7].text.strip(" \n \r \t")
+                    fixture['leagueDivision'] = cols[8].text.strip(" \n \r \t")
+                    fixture['notes'] = cols[9].text.strip(" \n \r \t")
+                    fixture['pitch'] = set_pitch_size(age_group_check)
+                    list_of_fixtures.append(fixture)
 
 
 for key, url in fixturesurls.items():
