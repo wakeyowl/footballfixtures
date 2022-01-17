@@ -75,7 +75,7 @@ def parseurl(inputurl):
             home_team_check = cols[2].text.strip(" \n \r \t")
             age_group_check = home_team_check.lower().strip("woodkirk valley orange white black u under s")
             if home_team_check.lower().startswith(("woodkirk", "morley town lfc")):
-                if (str(cols[1].text.strip(("\n \r \t").replace('\n', ' ')) != 'TBC')):
+                if str(cols[1].text.strip(("\n \r \t").replace('\n', ' ')) != 'TBC'):
                     fixture['fixtureType'] = cols[0].text.strip(" \n \r \t")
                     fixture['time'] = cols[1].text.strip("\n \r \t").replace('\n', ' ')
                     fixture['homeTeam'] = cols[2].text.strip(" \n \r \t")
